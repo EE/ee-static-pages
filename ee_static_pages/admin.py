@@ -4,4 +4,4 @@ from .models import StaticPage
 
 @admin.register(StaticPage)
 class StaticAdmin(admin.ModelAdmin):
-    pass
+    fields = ('name', 'slug', 'content', 'block_indexing', 'title_override', 'meta_description_override')
