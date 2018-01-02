@@ -1,13 +1,24 @@
 from django.db import models
 from django.utils.text import slugify
+from django.utils.translation import ugettext_lazy as _
 
 from ee_seo_mixin.models import SearchEngineOptimizableEntity
 
 
 class StaticPage(SearchEngineOptimizableEntity):
-    name = models.CharField(max_length=120)
-    slug = models.SlugField(max_length=140, unique=True, null=True, blank=True)
-    content = models.TextField()
+    name = models.CharField(
+        verbose_name=_("Name"),
+        max_length=120)
+    slug = models.SlugField(
+        max_length=140,
+        unique=True,
+        null=True,
+        blank=True,
+        help_text=_('"Slug" is a part of an url adress. \
+                    If you leave it blank, it will be generated \
+                    automatically from the page\'s name.'))
+    content = models.TextField(
+        verbose_name=_("Content"))
 
     def __str__(self):
         return self.name
