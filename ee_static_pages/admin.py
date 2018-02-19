@@ -1,7 +1,42 @@
+from django.conf import settings
 from django.contrib import admin
+from django.core.exceptions import ImproperlyConfigured
+from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
+
+try:
+    from ckeditor.widgets import CKEditorWidget
+except ImportError:
+    CKEDITOR_NOT_INSTALLED = True
+
 from .models import StaticPage
 
 
 @admin.register(StaticPage)
 class StaticAdmin(admin.ModelAdmin):
-    fields = ('name', 'slug', 'content', 'block_indexing', 'title_override', 'meta_description_override')
+
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'slug', 'content')
+        }),
+        ('SEO', {
+            'classes': ('collapse',),
+            'fields': ('block_indexing', 'title_override', 'meta_description_override'),
+        }),
+    )
+    search_fields = ('name',)
+    list_display = ('name', 'slug', 'block_indexing')
+    list_filter = ('block_indexing',)
+    prepopulated_fields = {"slug": ("name",)}
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'content':
+            if getattr(settings, 'EE_STATIC_PAGES_USE_CKEDITOR', False):
+                if CKEDITOR_NOT_INSTALLED:
+                    raise ImproperlyConfigured('If you want to use CKEDITOR you need to install it first')
+                kwargs['widget'] = CKEditorWidget(config_name='default')
+            else:
+                kwargs['help_text'] = mark_safe(
+                    _("You can use <a href='http://commonmark.org/help/'>MarkDown</a> formatting")
+                )
+        return super(StaticAdmin, self).formfield_for_dbfield(db_field, **kwargs)
