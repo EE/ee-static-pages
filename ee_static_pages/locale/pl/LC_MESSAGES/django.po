@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-19 13:06+0100\n"
+"POT-Creation-Date: 2018-02-19 17:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,16 +23,26 @@ msgstr ""
 #: admin.py:40
 msgid ""
 "You can use <a href='http://commonmark.org/help/'>MarkDown</a> formatting"
-msgstr "Możesz używać znaczników formatowania <a href='http://commonmark.org/help/'>MarkDown</a>"
+msgstr ""
+"Możesz używać znaczników formatowania <a href='http://commonmark.org/"
+"help/'>MarkDown</a>"
 
-#: models.py:10
+#: models.py:13
 msgid "Name"
 msgstr "Nazwa"
 
-#: models.py:15
-msgid "\"Slug\" is a part of an url adress."
-msgstr "\"Slug\" jest częścią adresu url"
+#: models.py:18
+msgid "The unique identifier used in the page's URL"
+msgstr "Unikalny identyfikator używany w adresie strony"
 
-#: models.py:17
+#: models.py:20
 msgid "Content"
 msgstr "Treść"
+
+#: models.py:36
+msgid "Static Page"
+msgstr "Strona statyczna"
+
+#: models.py:37
+msgid "Static Pages"
+msgstr "Strony statyczne"

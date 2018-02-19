@@ -4,11 +4,6 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-try:
-    from ckeditor.widgets import CKEditorWidget
-except ImportError:
-    CKEDITOR_NOT_INSTALLED = True
-
 from .models import StaticPage
 
 
@@ -31,9 +26,14 @@ class StaticAdmin(admin.ModelAdmin):
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == 'content':
-            if getattr(settings, 'EE_STATIC_PAGES_USE_CKEDITOR', False):
-                if CKEDITOR_NOT_INSTALLED:
-                    raise ImproperlyConfigured('If you want to use CKEDITOR you need to install it first')
+            editor = getattr(settings, 'EE_STATIC_PAGES_EDITOR', 'markdown')
+            if editor == 'ckeditor':
+
+                if 'ckeditor' not in settings.INSTALLED_APPS:
+                    raise ImproperlyConfigured('Add CKEditor to INSTALLED_APPS')
+
+                from ckeditor.widgets import CKEditorWidget
+
                 kwargs['widget'] = CKEditorWidget(config_name='default')
             else:
                 kwargs['help_text'] = mark_safe(

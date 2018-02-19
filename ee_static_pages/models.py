@@ -1,7 +1,10 @@
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
 
+from django_markwhat.templatetags.markup import commonmark
 from ee_seo_mixin.models import SearchEngineOptimizableEntity
 
 
@@ -12,7 +15,7 @@ class StaticPage(SearchEngineOptimizableEntity):
     slug = models.SlugField(
         max_length=140,
         unique=True,
-        help_text=_('"Slug" is a part of an url adress.'))
+        help_text=_('The unique identifier used in the page\'s URL'))
     content = models.TextField(
         verbose_name=_("Content"))
 
@@ -22,5 +25,13 @@ class StaticPage(SearchEngineOptimizableEntity):
     def get_absolute_url(self):
         return reverse('static-page', kwargs={'slug': self.slug})
 
-    def save(self, *args, **kwargs):
-        super(StaticPage, self).save(*args, **kwargs)
+    def rendered_content(self):
+        editor = getattr(settings, 'EE_STATIC_PAGES_EDITOR', 'markdown')
+        if editor == 'ckeditor':
+            return mark_safe(self.content)
+        else:
+            return commonmark(self.content)
+
+    class Meta:
+        verbose_name = _("Static Page")
+        verbose_name_plural = _("Static Pages")
