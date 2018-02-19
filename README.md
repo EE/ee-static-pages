@@ -1,5 +1,5 @@
 # ee-static-pages
-Django app for static pages functionality
+Django app for static pages functionality with builtin support for [CommonMark](http://commonmark.org/) and optional support for [CKEditor](https://github.com/django-ckeditor/django-ckeditor).
 
 ## installation
 
@@ -19,9 +19,11 @@ Django app for static pages functionality
   ]
   ```
 
+3. Run `python manage.py migrate ee_static_pages` to create appropriate db tables.
+
 ## static page object
 
-A static page has 3 simple fields: `name`, `slug` and `content`. On top of that, it also has three SEO related fields (for details, see [ee-seo-mixin](https://github.com/EE/ee-seo-mixin/) package).
+A static page has 3 simple fields: `name`, `slug` and `content`. On top of that, it also has three SEO related fields (for details, see [ee-seo-mixin](https://github.com/EE/ee-seo-mixin/) package). The `content` field supports usage of CommonMark tags out of the box. If you need bigger guns you can switch on CKEditor support (see below).
 
 ## usage
 
@@ -44,16 +46,27 @@ A static page has 3 simple fields: `name`, `slug` and `content`. On top of that,
   ```python
   # static_page.html
   {% extends 'base.html' %}
-  {% load seo_tags %}
+  {% load ee_static_tags %}
 
   {% block title %}
     {% override_title object default="My title" %}
   {% endblock %}
 
   {% block  content %}
-    {{ object.content }}
+    {{ object.content|render_html }}
   {% endblock content %}
 
   ```
 
-3. If you need your static page template to have a name other then the default `static_page.html`, you can set `EE_STATIC_PAGES_TEMPLATE_NAME` setting in your `settings.py`.
+  NOTE: always use `render_html` filter with `content`. This will handle CommonMark/RichTextField appropriately.
+
+
+### CKEditor integration
+
+For this to work you need to have _django-ckeditor_ app installed as per [official repository instructions](https://github.com/django-ckeditor/django-ckeditor#installation). On top of that the only thing you need to do is to set `EE_STATIC_PAGES_USE_CKEDITOR` setting to `True` in your `settings.py` file.
+
+### Custom settings
+
+1. If you need your static page template to have a name other then the default `static_page.html`, you can set `EE_STATIC_PAGES_TEMPLATE_NAME` setting in your `settings.py` with an appropriate name.
+
+2. If you want `content` field to be a CKEditor's RichTextField (see above) set `EE_STATIC_PAGES_USE_CKEDITOR` to `True` (default is `False`)
