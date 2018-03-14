@@ -51,12 +51,12 @@ A static page has 3 simple fields: `name`, `slug` and `content`. On top of that,
   {% block title %}
     {% override_title object default=object.name %}
   {% endblock %}
-  
+
   {% block extrahead %}
     {% override_description my_page default='' %}
     {% block_indexing my_page default=False %}
   {% endblock %}
-  
+
   {% block  content %}
     {{ object.rendered_content }}
   {% endblock content %}
